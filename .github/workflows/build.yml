@@ -33,13 +33,11 @@ jobs:
           mv injection.dart lib/ 2>/dev/null || true
           mv app_theme.dart lib/core/theme/ 2>/dev/null || true
           
-          # 3. Create Android platform files
-          flutter create . --platforms android --force
+          # 3. Correctly generate Android platform files (Removed --force)
+          flutter create --overwrite --platforms android .
           
-          # 4. Install dependencies
+          # 4. Install dependencies and build
           flutter pub get
-          
-          # 5. Build the APK
           flutter build apk --release
 
       - name: Upload APK
