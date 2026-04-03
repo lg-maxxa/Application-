@@ -24,7 +24,7 @@ jobs:
 
       - name: Create Platform and Organize Code
         run: |
-          # 1. Generate Android folders first
+          # 1. Generate Android folders
           flutter create --overwrite --platforms android .
           
           # 2. Move your files into the lib folder
@@ -36,13 +36,15 @@ jobs:
 
       - name: Install and Generate Code
         run: |
+          # Force an update of all dependencies to resolve the conflicts
+          flutter pub upgrade --major-versions
           flutter pub get
-          # This creates the missing 'init' and database files
-          dart run build_runner build --delete-conflicting-outputs
+          
+          # Use 'flutter pub run' instead of 'dart run' for better compatibility
+          flutter pub run build_runner build --delete-conflicting-outputs
 
       - name: Build APK
         run: |
-          # Final compilation
           flutter build apk --release
           
       - name: Upload APK
