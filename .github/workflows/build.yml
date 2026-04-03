@@ -22,22 +22,22 @@ jobs:
         with:
           channel: 'stable'
 
-      - name: Organize and Build
+      - name: Create Platform and Organize Code
         run: |
-          # 1. Create the required folder structure
-          mkdir -p lib/core/theme
+          # 1. Generate Android folders first (the template goes here)
+          flutter create --overwrite --platforms android .
           
-          # 2. Move your uploaded files into the lib folder
+          # 2. Now overwrite the template with YOUR files
+          mkdir -p lib/core/theme
           mv main.dart lib/ 2>/dev/null || true
           mv app.dart lib/ 2>/dev/null || true
           mv injection.dart lib/ 2>/dev/null || true
           mv app_theme.dart lib/core/theme/ 2>/dev/null || true
-          
-          # 3. Correctly generate Android platform files (Removed --force)
-          flutter create --overwrite --platforms android .
-          
-          # 4. Install dependencies and build
+
+      - name: Install and Build
+        run: |
           flutter pub get
+          # Building the actual NearbyChat APK
           flutter build apk --release
 
       - name: Upload APK
