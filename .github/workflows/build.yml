@@ -11,20 +11,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # 1. Manually fix the folder structure (moving files to lib/)
-      - name: Reorganize Files
-        run: |
-          mkdir -p lib/core/theme
-          mv main.dart app.dart injection.dart lib/ 2>/dev/null || true
-          mv app_theme.dart lib/core/theme/ 2>/dev/null || true
-
-      # 2. Fix the dependency conflicts in pubspec.yaml automatically
-      - name: Fix Dependencies
-        run: |
-          echo "dependency_overrides:" >> pubspec.yaml
-          echo "  mime: ^1.0.4" >> pubspec.yaml
-          echo "  permission_handler: ^11.3.0" >> pubspec.yaml
-
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
@@ -36,18 +22,29 @@ jobs:
         with:
           channel: 'stable'
 
-      - name: Build Project
+      - name: Organize and Build
         run: |
-          # Generate the missing Android platform files
-          flutter create . --platforms android 
+          # 1. Create the required folder structure
+          mkdir -p lib/core/theme
+          
+          # 2. Move your uploaded files into the lib folder
+          mv main.dart lib/ 2>/dev/null || true
+          mv app.dart lib/ 2>/dev/null || true
+          mv injection.dart lib/ 2>/dev/null || true
+          mv app_theme.dart lib/core/theme/ 2>/dev/null || true
+          
+          # 3. Create Android platform files
+          flutter create . --platforms android --force
+          
+          # 4. Install dependencies
           flutter pub get
-          # Run code generation for Drift/Hive
-          dart run build_runner build --delete-conflicting-outputs
-          # Build the final APK
+          
+          # 5. Build the APK
           flutter build apk --release
 
-      - name: Upload APK Artifact
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: NearbyChat-Release
           path: build/app/outputs/flutter-apk/app-release.apk
+          
