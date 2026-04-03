@@ -9,51 +9,43 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      # 1. Check out the repository to access the zip file
       - uses: actions/checkout@v4
 
-      # 2. Unzip the file you uploaded
       - name: Extract Project Files
         run: unzip nearby_chat_app.zip
 
-      # 3. Set up Java (Required for Android builds)
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: '17'
 
-      # 4. Set up the Flutter SDK
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-          # Matches the SDK version in your pubspec.yaml
-          flutter-version: '3.19.0' 
 
-      # 5. Install dependencies
-      - name: Install Dependencies
+      - name: Repair Project and Install Dependencies
         run: |
           cd generated_flutter_app
+          # This generates the missing android/ folder
+          flutter create . --platforms android 
           flutter pub get
 
-      # 6. Run Code Generation
-      # Necessary for your drift, hive, and injectable dependencies
-      - name: Run Build Runner
+      - name: Run Code Generation
         run: |
           cd generated_flutter_app
-          dark run build_runner build --delete-conflicting-outputs
+          # Fixed the 'dark' typo to 'dart'
+          dart run build_runner build --delete-conflicting-outputs
 
-      # 7. Build the final APK
       - name: Build Release APK
         run: |
           cd generated_flutter_app
           flutter build apk --release
 
-      # 8. Save the APK so you can download it
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: NearbyChat-Release
           path: generated_flutter_app/build/app/outputs/flutter-apk/app-release.apk
-
+          
