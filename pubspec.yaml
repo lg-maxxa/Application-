@@ -10,9 +10,9 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.6
-  flutter_p2p_connection: ^2.0.0
+  flutter_p2p_connection: any
   nearby_connections: ^4.0.0
-  permission_handler: ^11.3.0
+  permission_handler: any
   flutter_bloc: ^8.1.4
   equatable: ^2.0.5
   get_it: ^7.6.7
@@ -54,9 +54,9 @@ dev_dependencies:
   mockito: ^5.4.4
   bloc_test: ^9.1.7
 
+dependency_overrides:
+  mime: ^1.0.4
+
 flutter:
   uses-material-design: true
-  assets:
-    - assets/images/
-    - assets/animations/
-    - assets/icons/
+  
