@@ -24,25 +24,29 @@ jobs:
 
       - name: Create Platform and Organize Code
         run: |
-          # 1. Generate Android folders first (the template goes here)
+          # 1. Generate Android folders first
           flutter create --overwrite --platforms android .
           
-          # 2. Now overwrite the template with YOUR files
+          # 2. Move your files into the lib folder
           mkdir -p lib/core/theme
           mv main.dart lib/ 2>/dev/null || true
           mv app.dart lib/ 2>/dev/null || true
           mv injection.dart lib/ 2>/dev/null || true
           mv app_theme.dart lib/core/theme/ 2>/dev/null || true
 
-      - name: Install and Build
+      - name: Install and Generate Code
         run: |
           flutter pub get
-          # Building the actual NearbyChat APK
-          flutter build apk --release
+          # This creates the missing 'init' and database files
+          dart run build_runner build --delete-conflicting-outputs
 
+      - name: Build APK
+        run: |
+          # Final compilation
+          flutter build apk --release
+          
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: NearbyChat-Release
           path: build/app/outputs/flutter-apk/app-release.apk
-          
