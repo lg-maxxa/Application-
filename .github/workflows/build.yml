@@ -24,18 +24,12 @@ jobs:
 
       - name: Force Project Repair
         run: |
-          # 1. Create Android folder (This overwrites your pubspec.yaml)
+          # 1. Create Android folder (This overwrites some generated files)
           flutter create --overwrite --platforms android .
           
-          # 2. CRITICAL: Restore your original pubspec.yaml from GitHub
+          # 2. CRITICAL: Restore original pubspec.yaml and source files from git
           git checkout pubspec.yaml
-          
-          # 3. Organize your code into the lib folder
-          mkdir -p lib/core/theme
-          mv main.dart lib/ 2>/dev/null || true
-          mv app.dart lib/ 2>/dev/null || true
-          mv injection.dart lib/ 2>/dev/null || true
-          mv app_theme.dart lib/core/theme/ 2>/dev/null || true
+          git checkout -- lib/ test/
 
       - name: Build and Generate
         run: |
@@ -44,6 +38,9 @@ jobs:
           
           # Generate the missing 'init' code for injection
           flutter pub run build_runner build --delete-conflicting-outputs
+          
+          # Run tests
+          flutter test
           
           # Final build
           flutter build apk --release
