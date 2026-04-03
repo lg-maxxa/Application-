@@ -1,0 +1,15 @@
+{
+  "project": "NearbyChat",
+  "generated_at": "2026-04-03T07:38:27.899124",
+  "total_files": 8,
+  "files": [
+    ".gitignore",
+    "README.md",
+    "analysis_options.yaml",
+    "lib/app.dart",
+    "lib/core/theme/app_theme.dart",
+    "lib/injection.dart",
+    "lib/main.dart",
+    "pubspec.yaml"
+  ]
+}
