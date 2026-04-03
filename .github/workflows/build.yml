@@ -22,31 +22,32 @@ jobs:
         with:
           channel: 'stable'
 
-      - name: Create Platform and Organize Code
+      - name: Force Project Repair
         run: |
-          # 1. Generate Android folders
+          # 1. Create Android folder (This overwrites your pubspec.yaml)
           flutter create --overwrite --platforms android .
           
-          # 2. Move your files into the lib folder
+          # 2. CRITICAL: Restore your original pubspec.yaml from GitHub
+          git checkout pubspec.yaml
+          
+          # 3. Organize your code into the lib folder
           mkdir -p lib/core/theme
           mv main.dart lib/ 2>/dev/null || true
           mv app.dart lib/ 2>/dev/null || true
           mv injection.dart lib/ 2>/dev/null || true
           mv app_theme.dart lib/core/theme/ 2>/dev/null || true
 
-      - name: Install and Generate Code
+      - name: Build and Generate
         run: |
-          # Force an update of all dependencies to resolve the conflicts
-          flutter pub upgrade --major-versions
+          # Now that the correct pubspec is back, get the packages
           flutter pub get
           
-          # Use 'flutter pub run' instead of 'dart run' for better compatibility
+          # Generate the missing 'init' code for injection
           flutter pub run build_runner build --delete-conflicting-outputs
-
-      - name: Build APK
-        run: |
-          flutter build apk --release
           
+          # Final build
+          flutter build apk --release
+
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
