@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'app.dart';
 import 'injection.dart';
 
-void main() async {
-  // Ensure Flutter bindings are initialized before calling native code
+Future<void> bootstrap({
+  Future<void> Function()? configure,
+  void Function(Widget app)? appRunner,
+}) async {
   WidgetsFlutterBinding.ensureInitialized();
-  
-  // Initialize P2P and Database dependencies
-  await configureDependencies();
-  
-  runApp(const NearbyChatApp());
+
+  await (configure ?? configureDependencies)();
+
+  (appRunner ?? runApp)(const NearbyChatApp());
 }
+
+Future<void> main() async => bootstrap();
