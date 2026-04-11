@@ -53,19 +53,23 @@ void main() {
     });
 
     test('scaffoldBackgroundColor matches chatBackground', () {
-      expect(theme.scaffoldBackgroundColor, AppTheme.chatBackground);
+      expect(theme.scaffoldBackgroundColor, const Color(0xFFF4F7F8));
     });
 
     test('uses Material 3', () {
       expect(theme.useMaterial3, isTrue);
     });
 
-    test('appBarTheme backgroundColor matches primary', () {
-      expect(theme.appBarTheme.backgroundColor, AppTheme.primary);
+    test('appBarTheme uses transparent background', () {
+      expect(theme.appBarTheme.backgroundColor, Colors.transparent);
     });
 
     test('appBarTheme elevation is 0', () {
       expect(theme.appBarTheme.elevation, 0);
+    });
+
+    test('navigation bar has indicator color configured', () {
+      expect(theme.navigationBarTheme.indicatorColor, isNotNull);
     });
   });
 
@@ -94,6 +98,10 @@ void main() {
 
     test('brightness is dark', () {
       expect(theme.brightness, Brightness.dark);
+    });
+
+    test('dark theme uses modern scaffold background', () {
+      expect(theme.scaffoldBackgroundColor, const Color(0xFF0D1616));
     });
   });
 }

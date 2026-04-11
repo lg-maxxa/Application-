@@ -8,14 +8,16 @@ void main() {
     testWidgets('builds without error', (tester) async {
       await tester.pumpWidget(const NearbyChatApp());
       await tester.pumpAndSettle();
-      // MaterialApp.router still creates a MaterialApp internally
       expect(find.byType(MaterialApp), findsOneWidget);
     });
 
-    testWidgets('displays loading screen at initial route', (tester) async {
+    testWidgets('renders modern home hero and quick actions', (tester) async {
       await tester.pumpWidget(const NearbyChatApp());
       await tester.pumpAndSettle();
-      expect(find.text('NearbyChat - Loading...'), findsOneWidget);
+      expect(find.text('Connect. Chat. Share.'), findsOneWidget);
+      expect(find.text('Quick actions'), findsOneWidget);
+      expect(find.byType(ActionChip), findsNWidgets(3));
+      expect(find.byType(NavigationBar), findsOneWidget);
     });
 
     testWidgets('applies light theme with correct primary color', (tester) async {
@@ -35,17 +37,33 @@ void main() {
       expect(materialApp.darkTheme?.brightness, Brightness.dark);
     });
 
-    testWidgets('scaffold is centered with loading text', (tester) async {
+    testWidgets('start session button shows feedback snackbar', (tester) async {
       await tester.pumpWidget(const NearbyChatApp());
       await tester.pumpAndSettle();
-      expect(find.byType(Center), findsWidgets);
-      expect(find.byType(Text), findsWidgets);
+      await tester.tap(find.text('Start Nearby Session'));
+      await tester.pumpAndSettle();
+      expect(find.text('Starting secure nearby session...'), findsOneWidget);
+    });
+
+    testWidgets('private mode switch toggles state', (tester) async {
+      await tester.pumpWidget(const NearbyChatApp());
+      await tester.pumpAndSettle();
+
+      final switchFinder = find.byType(Switch);
+      expect(switchFinder, findsOneWidget);
+      final initial = tester.widget<Switch>(switchFinder);
+      expect(initial.value, isTrue);
+
+      await tester.tap(find.text('Private Mode'));
+      await tester.pumpAndSettle();
+
+      final toggled = tester.widget<Switch>(switchFinder);
+      expect(toggled.value, isFalse);
     });
 
     testWidgets('debug banner is disabled', (tester) async {
       await tester.pumpWidget(const NearbyChatApp());
       await tester.pumpAndSettle();
-      // When debugShowCheckedModeBanner is false, no debug banner overlay
       expect(find.byType(CheckedModeBanner), findsNothing);
     });
 
