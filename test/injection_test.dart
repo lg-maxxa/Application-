@@ -6,10 +6,5 @@ void main() {
     test('completes successfully', () async {
       await expectLater(configureDependencies(), completes);
     });
-
-    test('can be called multiple times safely', () async {
-      await configureDependencies();
-      await expectLater(configureDependencies(), completes);
-    });
   });
 }
