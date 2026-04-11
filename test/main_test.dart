@@ -5,27 +5,26 @@ import 'package:nearby_chat/main.dart';
 
 void main() {
   group('bootstrap', () {
-    testWidgets('initializes bindings before configure and runs app', (
-      tester,
-    ) async {
-      var configureSawInitializedBinding = false;
+    test('runs configure before app startup', () async {
+      var configureRan = false;
       var appRan = false;
 
       await bootstrap(
         configure: () async {
-          configureSawInitializedBinding = WidgetsBinding.instance != null;
+          configureRan = true;
         },
         appRunner: (app) {
+          expect(configureRan, isTrue);
           appRan = true;
           expect(app, isA<NearbyChatApp>());
         },
       );
 
-      expect(configureSawInitializedBinding, isTrue);
+      expect(configureRan, isTrue);
       expect(appRan, isTrue);
     });
 
-    testWidgets('does not run app when dependency setup fails', (tester) async {
+    test('does not run app when dependency setup fails', () async {
       var appRan = false;
 
       await expectLater(
