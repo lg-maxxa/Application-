@@ -1,9 +1,4 @@
-import 'package:get_it/get_it.dart';
-import 'package:injectable/injectable.dart';
-
-part 'injection.config.dart';
-
-final getIt = GetIt.instance;
-
-@InjectableInit()
-Future<void> configureDependencies() async => await getIt.init();
+Future<void> configureDependencies() async {
+  // TODO: Replace with real DI registration (e.g. generated GetIt setup)
+  // before introducing any dependency-resolved features.
+}
